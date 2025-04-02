@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 # URL of the study spaces page
 URL = "https://www.bris.ac.uk/where-is-my/find/study-desk/table"
-OUTPUT_FILE = "seat_availability2.csv"
+OUTPUT_FILE = "seat_availability.csv"
 
 def scrape_seat_data():
     # Set up Chrome WebDriver with improved stability options
