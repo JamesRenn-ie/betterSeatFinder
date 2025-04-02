@@ -1,1 +1,41 @@
-Timestamp,Location,Seats Free
+Timestamp,Location,Seats Free,Total Seats
+2025-04-02 17:11:56,Ground Floor,147,267
+2025-04-02 17:11:56,First Floor,102,252
+2025-04-02 17:11:56,Second Floor,147,270
+2025-04-02 17:11:56,Ground Floor,147,267
+2025-04-02 17:11:56,First Floor,64,194
+2025-04-02 17:11:56,Medical Library: Level A,70,91
+2025-04-02 17:11:56,Medical Library: Level B,138,173
+2025-04-02 17:11:56,Chemistry Library,160,231
+2025-04-02 17:11:56,Education Library,51,92
+2025-04-02 17:11:56,Grace Reeves Study Centre,89,124
+2025-04-02 17:11:56,Physics Library,141,174
+2025-04-02 17:11:56,Queen's Library,51,168
+2025-04-02 17:11:56,Second Floor (Live Learning)),24,86
+2025-04-02 17:11:56,Third Floor,97,226
+2025-04-02 17:11:56,Hawthorns Study Lounge,56,80
+2025-04-02 17:11:56,The Brambles,89,102
+2025-04-02 17:11:56,Veterinary Sciences Library,80,83
+2025-04-02 17:11:56,Wills Memorial Library: Ante Library and Cooper Room,57,66
+2025-04-02 17:11:56,Wills Memorial Library: East Wing,49,246
+2025-04-02 17:11:56,Wills Memorial Library: South Wing,97,251
+2025-04-02 17:15:56,Ground Floor,147,267
+2025-04-02 17:15:56,First Floor,102,252
+2025-04-02 17:15:56,Second Floor,147,270
+2025-04-02 17:15:56,Ground Floor,147,267
+2025-04-02 17:15:56,First Floor,64,194
+2025-04-02 17:15:56,Medical Library: Level A,70,91
+2025-04-02 17:15:56,Medical Library: Level B,138,173
+2025-04-02 17:15:56,Chemistry Library,160,231
+2025-04-02 17:15:56,Education Library,51,92
+2025-04-02 17:15:56,Grace Reeves Study Centre,89,124
+2025-04-02 17:15:56,Physics Library,141,174
+2025-04-02 17:15:56,Queen's Library,51,168
+2025-04-02 17:15:56,Second Floor (Live Learning)),24,86
+2025-04-02 17:15:56,Third Floor,97,226
+2025-04-02 17:15:56,Hawthorns Study Lounge,56,80
+2025-04-02 17:15:56,The Brambles,89,102
+2025-04-02 17:15:56,Veterinary Sciences Library,80,83
+2025-04-02 17:15:56,Wills Memorial Library: Ante Library and Cooper Room,57,66
+2025-04-02 17:15:56,Wills Memorial Library: East Wing,49,246
+2025-04-02 17:15:56,Wills Memorial Library: South Wing,97,251
