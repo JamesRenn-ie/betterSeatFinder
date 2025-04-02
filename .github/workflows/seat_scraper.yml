@@ -32,7 +32,13 @@ jobs:
       run: |
         wget -N "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.42/linux64/chromedriver-linux64.zip"
         unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE/chromedriver
-    
+
+    - name: Run script
+      env:
+        DISPLAY: :99
+        CHROME_BIN: /usr/bin/google-chrome
+      run: python seat_scraper.py
+
     - name: Commit and Push CSV Update
       run: |
         git config --global user.name "GitHub Actions"
@@ -44,9 +50,3 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-
-    - name: Run script
-      env:
-        DISPLAY: :99
-        CHROME_BIN: /usr/bin/google-chrome
-      run: python seat_scraper.py
