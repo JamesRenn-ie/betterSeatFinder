@@ -2,8 +2,8 @@ name: Run Scrape Data Script
 
 on:
   schedule:
-    # Run every 20 minutes
-    - cron: '*/20 * * * *'
+    # Run every 21 minutes
+    - cron: '*/21 * * * *'
 
 jobs:
   build:
