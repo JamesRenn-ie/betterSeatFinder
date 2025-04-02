@@ -2,7 +2,7 @@ name: Run Scrape Data Script
 
 on:
   schedule:
-    - cron: '*/21 * * * *'
+    - cron: '*/21 * * * *'  # Runs every 21 minutes
   workflow_dispatch:
 
 jobs:
@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -26,24 +26,19 @@ jobs:
     - name: Install Chrome
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip
-        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-        sudo apt-get update
         sudo apt-get install -y google-chrome-stable
 
     - name: Install ChromeDriver
       run: |
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\\d+\\.\\d+\\.\\d+')
         CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-        wget -N "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.42/linux64/chromedriver-linux64.zip"
-        mkdir -p $GITHUB_WORKSPACE/chromedriver
+        wget -N "https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip"
         unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE/chromedriver
-        ls $GITHUB_WORKSPACE/chromedriver
+        chmod +x $GITHUB_WORKSPACE/chromedriver/chromedriver
+        echo "$GITHUB_WORKSPACE/chromedriver" >> $GITHUB_PATH
 
     - name: Run script
       env:
-        PATH: $GITHUB_WORKSPACE:$PATH
         DISPLAY: :99
         CHROME_BIN: /usr/bin/google-chrome
       run: python seat_scraper.py
