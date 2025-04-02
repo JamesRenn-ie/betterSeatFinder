@@ -30,12 +30,8 @@ jobs:
 
     - name: Install ChromeDriver
       run: |
-        CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1)
-        CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
         wget -N "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.42/linux64/chromedriver-linux64.zip"
-        unzip chromedriver_linux64.zip -d $GITHUB_WORKSPACE/chromedriver
-        chmod +x $GITHUB_WORKSPACE/chromedriver/chromedriver
-        echo "$GITHUB_WORKSPACE/chromedriver" >> $GITHUB_PATH
+        unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE/chromedriver
 
     - name: Run script
       env:
