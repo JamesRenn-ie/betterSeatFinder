@@ -44,4 +44,4 @@ jobs:
     - name: Run script
       env:
         PATH: $GITHUB_WORKSPACE:$PATH
-      run: python scrape_data.py
+      run: python seat_scraper.py
