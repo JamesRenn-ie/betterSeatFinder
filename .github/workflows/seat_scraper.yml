@@ -40,7 +40,7 @@ jobs:
         mkdir -p $GITHUB_WORKSPACE/chromedriver
         unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE/chromedriver
         ls $GITHUB_WORKSPACE/chromedriver
-        chmod +x $GITHUB_WORKSPACE/chromedriver/chromedriver
+        chmod +x $GITHUB_WORKSPACE/chromedriver-linux64/chromedriver
 
     - name: Run script
       env:
