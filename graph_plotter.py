@@ -26,7 +26,7 @@ for location in locations:
     location_data = data[data['Location'] == location]
     
     # Group the data by 'Time' and sum the 'Seats Free' for each time point
-    time_grouped = location_data.groupby('Time')['Seats Free'].sum().reset_index()
+    time_grouped = location_data.groupby('Time')['Seats Free'].mean().reset_index()
     
     # Plotting
     plt.figure(figsize=(12, 6))
