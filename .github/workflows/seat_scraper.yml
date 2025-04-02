@@ -39,8 +39,8 @@ jobs:
         wget -N "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.42/linux64/chromedriver-linux64.zip"
         mkdir -p $GITHUB_WORKSPACE/chromedriver
         unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE/chromedriver
-        echo ls 
-        chmod +x $GITHUB_WORKSPACE/chromedriver/chromedriver-linux64/chromedriver
+        ls $GITHUB_WORKSPACE/chromedriver
+        chmod +x $GITHUB_WORKSPACE/chromedriver/chromedriver
 
     - name: Run script
       env:
