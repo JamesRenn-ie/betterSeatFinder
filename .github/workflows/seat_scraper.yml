@@ -44,4 +44,6 @@ jobs:
     - name: Run script
       env:
         PATH: $GITHUB_WORKSPACE:$PATH
+        DISPLAY: :99
+        CHROME_BIN: /usr/bin/google-chrome
       run: python seat_scraper.py
