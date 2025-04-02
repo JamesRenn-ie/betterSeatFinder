@@ -2,7 +2,6 @@ name: Run Scrape Data Script
 
 on:
   schedule:
-    # Run every 21 minutes
     - cron: '*/21 * * * *'
   workflow_dispatch:
 
@@ -38,8 +37,10 @@ jobs:
         CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
         CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
         wget -N "https://storage.googleapis.com/chrome-for-testing-public/135.0.7049.42/linux64/chromedriver-linux64.zip"
-        unzip chromedriver-linux64.zip -d /usr/bin/
-        rm chromedriver-linux64.zip
+        unzip chromedriver-linux64.zip -d $GITHUB_WORKSPACE
+        chmod +x $GITHUB_WORKSPACE/chromedriver
 
     - name: Run script
+      env:
+        PATH: $GITHUB_WORKSPACE:$PATH
       run: python scrape_data.py
