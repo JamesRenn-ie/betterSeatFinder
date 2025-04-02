@@ -14,7 +14,13 @@ def scrape_seat_data():
     # Set up Chrome WebDriver
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
-    options.headless = False  # Set to True to run without opening a browser window
+    options.headless = True  # Set to True to run without opening a browser window
+    options.add_argument("--headless=new")  # Ensure modern headless mode
+    options.add_argument("--disable-gpu")  # Headless Chrome sometimes needs this
+    options.add_argument("--no-sandbox")  # Helps in some environments
+    options.add_argument("--disable-dev-shm-usage")  # Prevents crashes on low memory
+    options.add_argument("--disable-blink-features=AutomationControlled")  # Bypass bot detection
+
     driver = webdriver.Chrome(service=service, options=options)
 
     driver.get(URL)
