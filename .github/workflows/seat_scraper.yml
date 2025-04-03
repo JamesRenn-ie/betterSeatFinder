@@ -2,7 +2,7 @@ name: Run Scrape Data Script
 
 on:
   schedule:
-    - cron: '*/21 * * * *'  # Runs every 21 minutes
+    - cron: '*/20 * * * *'  # Runs every 21 minutes
   workflow_dispatch:
 
 jobs:
