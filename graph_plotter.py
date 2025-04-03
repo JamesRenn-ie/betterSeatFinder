@@ -7,8 +7,17 @@ import os
 file_path = 'seat_availability.csv'
 data = pd.read_csv(file_path)
 
+# Remove rows where 'Seats Free' contains '??'
+data = data[data['Seats Free'] != '??']
+
 # Convert the 'Timestamp' column to datetime objects
 data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+
+# Convert 'Seats Free' column to numeric (just in case there are any other non-numeric values)
+data['Seats Free'] = pd.to_numeric(data['Seats Free'], errors='coerce')
+
+# Drop rows where 'Seats Free' could not be converted (i.e., still NaN)
+data = data.dropna(subset=['Seats Free'])
 
 # Extract only the time part of the timestamp for plotting
 data['Time'] = data['Timestamp'].dt.strftime('%H:%M:%S')
@@ -25,7 +34,7 @@ for location in locations:
     # Filter data for the current location
     location_data = data[data['Location'] == location]
     
-    # Group the data by 'Time' and sum the 'Seats Free' for each time point
+    # Group the data by 'Time' and compute the mean 'Seats Free' for each time point
     time_grouped = location_data.groupby('Time')['Seats Free'].mean().reset_index()
     
     # Plotting
@@ -39,7 +48,6 @@ for location in locations:
     plt.tight_layout()
     
     # Save the plot as a PNG file
-    # Replace spaces and special characters in the location name for a valid filename
     safe_location_name = location.replace(' ', '_').replace(':', '').replace('(', '').replace(')', '')
     plt.savefig(os.path.join(output_dir, f'{safe_location_name}.png'))
     plt.close()
