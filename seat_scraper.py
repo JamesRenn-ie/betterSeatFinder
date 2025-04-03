@@ -11,18 +11,29 @@ URL = "https://www.bris.ac.uk/where-is-my/find/study-desk/table"
 OUTPUT_FILE = "seat_availability.csv"
 
 def scrape_seat_data():
-    # Set up Chrome WebDriver
+    # Set up Chrome WebDriver with improved stability options
     service = Service(ChromeDriverManager().install())
     options = webdriver.ChromeOptions()
-    options.headless = True  # Set to True to run without opening a browser window
-    options.add_argument("--headless=new")  # Ensure modern headless mode
-    options.add_argument("--disable-gpu")  # Headless Chrome sometimes needs this
-    options.add_argument("--no-sandbox")  # Helps in some environments
-    options.add_argument("--disable-dev-shm-usage")  # Prevents crashes on low memory
-    options.add_argument("--disable-blink-features=AutomationControlled")  # Bypass bot detection
-
+    options.add_argument("--headless")  # Use stable headless mode
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--remote-debugging-port=9222")  # Helps debugging
+    options.add_argument("--disable-features=VizDisplayCompositor")  # Fix crashes
+    options.add_argument("--disable-software-rasterizer")  # Prevent rendering issues
+    options.add_argument("--window-size=1920,1080")  # Ensure proper rendering
+    options.add_argument("--log-level=3")  # Suppress logs
+    options.add_argument("--disable-background-networking")
+    options.add_argument("--disable-background-timer-throttling")
+    options.add_argument("--disable-backgrounding-occluded-windows")
+    options.add_argument("--disable-client-side-phishing-detection")
+    options.add_argument("--disable-sync")
+    options.add_argument("--metrics-recording-only")
+    options.add_argument("--no-first-run")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-default-apps")
+    
     driver = webdriver.Chrome(service=service, options=options)
-
     driver.get(URL)
     time.sleep(10)  # Allow time for JavaScript to load content
 
