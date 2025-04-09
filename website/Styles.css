@@ -1,0 +1,90 @@
+body {
+    font-family: sans-serif;
+    background: #fafafa;
+    padding: 2rem;
+}
+
+h2 {
+    text-align: center;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.chart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.day-row {
+    display: flex;
+    align-items: flex-end;
+    height: 100px;
+}
+
+.day-label {
+    width: 80px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+    align-self: center;
+}
+
+.bar-container {
+    display: flex;
+    flex-grow: 1;
+    height: 100px;
+    align-items: flex-end;
+}
+
+.bar {
+    flex: 1;
+    margin: 0 1px;
+    background: #4a90e2;
+    height: 0%;
+    transition: height 0.3s;
+}
+
+.bar:hover {
+    background: #357ABD;
+}
+
+.hour-labels {
+    display: flex;
+    margin-left: 90px;
+    font-size: 12px;
+}
+
+.hour-labels div {
+    flex: 1;
+    text-align: center;
+}
+
+.location-title {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Axis labels */
+.axis-labels {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.axis-labels .x-axis {
+    margin-top: 10px;
+}
+
+.axis-labels .y-axis {
+    writing-mode: vertical-lr;
+    margin-right: 20px;
+}

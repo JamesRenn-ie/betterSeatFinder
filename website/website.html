@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seat Busyness Chart</title>
+  
+</head>
+<body>
+
+  <h2>Seat Busyness Chart</h2>
+  <div class="chart-container" id="chartContainer"></div>
+
+  <div class="axis-labels">
+    <div class="y-axis">Days of the Week</div>
+    <div class="x-axis">Hours of the Day (6am to Midnight)</div>
+  </div>
+
+  <script>
+    // Fetch the JSON data
+    fetch('output/seat_busyness.json')
+      .then(response => response.json())
+      .then(busynessData => {
+        const chartContainer = document.getElementById('chartContainer');
+
+        // Process each location
+        Object.entries(busynessData).forEach(([locationName, data]) => {
+          const locationChart = document.createElement('div');
+          locationChart.className = 'chart';
+
+          // Title for the location
+          const locationTitle = document.createElement('div');
+          locationTitle.className = 'location-title';
+          locationTitle.textContent = locationName;
+          locationChart.appendChild(locationTitle);
+
+          // Get max value to normalize busyness values (height of bars)
+          const maxVal = Math.max(...Object.values(data).flat());
+
+          // Generate day rows
+          Object.entries(data).forEach(([day, values]) => {
+            const row = document.createElement('div');
+            row.className = 'day-row';
+
+            // Day label
+            const label = document.createElement('div');
+            label.className = 'day-label';
+            label.textContent = day;
+
+            const bars = document.createElement('div');
+            bars.className = 'bar-container';
+
+            // Create the bars for each hour
+            values.forEach(val => {
+              const bar = document.createElement('div');
+              bar.className = 'bar';
+              
+              // Inverse the height: More seats free -> smaller bar (less busy)
+              bar.style.height = `${((maxVal - val) / maxVal) * 100}%`; // Invert the height
+              bars.appendChild(bar);
+            });
+
+            row.appendChild(label);
+            row.appendChild(bars);
+            locationChart.appendChild(row);
+          });
+
+          // Add the location chart to the container
+          chartContainer.appendChild(locationChart);
+
+          // Add hour labels at the bottom
+          const hourLabels = document.createElement('div');
+          hourLabels.className = 'hour-labels';
+          for (let h = 6; h <= 23; h++) {
+            const lbl = document.createElement('div');
+            lbl.textContent = `${h}:00`;
+            hourLabels.appendChild(lbl);
+          }
+          locationChart.appendChild(hourLabels);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading JSON data:', err);
+        document.body.innerHTML = '<p>Error loading the busyness data. Please try again later.</p>';
+      });
+  </script>
+
+</body>
+</html>
