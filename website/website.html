@@ -44,12 +44,40 @@
             });
 
             // Check if data coverage for the day is less than 10%
-            if (nonNullCount / totalCount < 0.5) {
+            if (nonNullCount / totalCount < 0.1) {
               const message = document.createElement('div');
               message.className = 'no-data-message';
               message.textContent = `${day} doesn't have enough data to make a graph`;
               locationChart.appendChild(message);
               return;
+            }
+
+            // Fill missing values based on the last known value, but only for a maximum of 3 further hours
+            for (let i = 0; i < values.length; i++) {
+              if (values[i] === null || values[i] === undefined || values[i] === 0) {
+                let lastKnownValue = null;
+                let fillCount = 0; // Counter to track how many hours have been filled
+
+                for (let j = i - 1; j >= 0; j--) {
+                  if (values[j] !== null && values[j] !== undefined && values[j] !== 0) {
+                    lastKnownValue = values[j];
+                    break;
+                  }
+                }
+
+                if (lastKnownValue !== null) {
+                  for (let k = i; k < values.length && fillCount < 3; k++) {
+                    if (values[k] === null || values[k] === undefined || values[k] === 0) {
+                      const hour = 6 + k; // Assuming the hours start at 6:00
+                      const adjustment = hour < 12 ? -5 : 5; // Adjust based on time of day
+                      values[k] = lastKnownValue + adjustment;
+                      fillCount++;
+                    } else {
+                      break; // Stop if we encounter a non-empty value
+                    }
+                  }
+                }
+              }
             }
 
             const row = document.createElement('div');
