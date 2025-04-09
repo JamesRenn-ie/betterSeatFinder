@@ -22,28 +22,6 @@
           const locationChart = document.createElement('div');
           locationChart.className = 'chart';
 
-          // Count non-null data points
-          let nonNullCount = 0;
-          let totalCount = 0;
-
-          Object.values(data).forEach(values => {
-            values.forEach(val => {
-              totalCount++;
-              if (val !== null && val !== undefined && val !== 0) {
-                nonNullCount++;
-              }
-            });
-          });
-
-          // Check if data coverage is less than 50%
-          if (nonNullCount / totalCount < 0.2) {
-            const message = document.createElement('div');
-            message.className = 'no-data-message';
-            message.textContent = `${locationName} don't check this space frequently enough to make a graph`;
-            chartContainer.appendChild(message);
-            return;
-          }
-
           // Title for the location
           const locationTitle = document.createElement('div');
           locationTitle.className = 'location-title';
@@ -55,6 +33,25 @@
 
           // Generate day rows
           Object.entries(data).forEach(([day, values]) => {
+            // Count non-null data points for the day
+            let nonNullCount = 0;
+            let totalCount = values.length;
+
+            values.forEach(val => {
+              if (val !== null && val !== undefined && val !== 0) {
+                nonNullCount++;
+              }
+            });
+
+            // Check if data coverage for the day is less than 10%
+            if (nonNullCount / totalCount < 0.5) {
+              const message = document.createElement('div');
+              message.className = 'no-data-message';
+              message.textContent = `${day} doesn't have enough data to make a graph`;
+              locationChart.appendChild(message);
+              return;
+            }
+
             const row = document.createElement('div');
             row.className = 'day-row';
 
