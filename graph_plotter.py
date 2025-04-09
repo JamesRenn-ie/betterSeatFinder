@@ -20,9 +20,15 @@ data = data[data['Seats Free'].ne(data.groupby('Location')['Seats Free'].shift()
 data['Hour'] = data['Timestamp'].dt.hour
 data['Day Name'] = data['Timestamp'].dt.day_name()
 
-# Get locations and weekday order
+# Limit data to hours between 6 AM and midnight
+data = data[(data['Hour'] >= 6) & (data['Hour'] <= 23)]
+
+# Get all unique locations and weekday names
 locations = data['Location'].unique()
 weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+# Set the desired hour range for x-axis
+hour_range = list(range(6, 24))
 
 # Create output directory
 output_dir = 'seat_availability_plots'
@@ -42,7 +48,7 @@ for location in locations:
     plt.title(f'Seats Free by Hour and Day - {location}')
     plt.xlabel('Hour of Day')
     plt.ylabel('Average Seats Free')
-    plt.xticks(range(0, 24))
+    plt.xticks(hour_range)
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
