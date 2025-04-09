@@ -14,12 +14,18 @@
       text-align: center;
     }
 
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
     .chart {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-width: 1000px;
-      margin: auto;
     }
 
     .day-row {
@@ -65,64 +71,84 @@
       flex: 1;
       text-align: center;
     }
+
+    .location-title {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
 
   <h2>Seat Busyness Chart</h2>
-  <div class="chart" id="busynessChart"></div>
-  <div class="hour-labels" id="hourLabels"></div>
+  <div class="chart-container" id="chartContainer"></div>
 
   <script>
-    // Replace this with actual fetched JSON later
-    const busynessData = {
-      "Example Location": {
-        "Monday":    [10, 20, 35, 40, 50, 60, 75, 80, 70, 50, 40, 30, 20, 10, 5, 5, 0],
-        "Tuesday":   [15, 25, 30, 45, 60, 65, 80, 90, 75, 60, 45, 30, 20, 15, 10, 5, 0],
-        "Wednesday": [5,  10, 15, 30, 45, 50, 60, 70, 65, 55, 40, 25, 15, 10, 5,  5, 0],
-        "Thursday":  [20, 30, 40, 55, 70, 75, 85, 90, 80, 60, 50, 30, 20, 15, 10, 5, 0],
-        "Friday":    [25, 35, 50, 65, 80, 85, 90, 95, 85, 70, 55, 40, 25, 15, 10, 5, 0],
-        "Saturday":  [5,  10, 20, 30, 40, 50, 60, 65, 60, 50, 40, 30, 20, 15, 10, 5, 0],
-        "Sunday":    [0,  5,  10, 20, 30, 40, 50, 55, 50, 40, 30, 20, 10, 5,  5,  5, 0]
-      }
-    };
+    // Fetch the JSON data
+    fetch('output/seat_busyness.json')
+      .then(response => response.json())
+      .then(busynessData => {
+        const chartContainer = document.getElementById('chartContainer');
 
-    const chart = document.getElementById("busynessChart");
-    const hourLabels = document.getElementById("hourLabels");
+        // Process each location
+        Object.entries(busynessData).forEach(([locationName, data]) => {
+          const locationChart = document.createElement('div');
+          locationChart.className = 'chart';
 
-    const locationName = Object.keys(busynessData)[0];
-    const data = busynessData[locationName];
-    const maxVal = Math.max(...Object.values(data).flat());
+          // Title for the location
+          const locationTitle = document.createElement('div');
+          locationTitle.className = 'location-title';
+          locationTitle.textContent = locationName;
+          locationChart.appendChild(locationTitle);
 
-    Object.entries(data).forEach(([day, values]) => {
-      const row = document.createElement("div");
-      row.className = "day-row";
+          // Get max value to normalize busyness values (height of bars)
+          const maxVal = Math.max(...Object.values(data).flat());
 
-      const label = document.createElement("div");
-      label.className = "day-label";
-      label.textContent = day;
+          // Generate day rows
+          Object.entries(data).forEach(([day, values]) => {
+            const row = document.createElement('div');
+            row.className = 'day-row';
 
-      const bars = document.createElement("div");
-      bars.className = "bar-container";
+            // Day label
+            const label = document.createElement('div');
+            label.className = 'day-label';
+            label.textContent = day;
 
-      values.forEach(val => {
-        const bar = document.createElement("div");
-        bar.className = "bar";
-        bar.style.height = `${(val / maxVal) * 100}%`;
-        bars.appendChild(bar);
+            const bars = document.createElement('div');
+            bars.className = 'bar-container';
+
+            // Create the bars for each hour
+            values.forEach(val => {
+              const bar = document.createElement('div');
+              bar.className = 'bar';
+              bar.style.height = `${(val / maxVal) * 100}%`;
+              bars.appendChild(bar);
+            });
+
+            row.appendChild(label);
+            row.appendChild(bars);
+            locationChart.appendChild(row);
+          });
+
+          // Add the location chart to the container
+          chartContainer.appendChild(locationChart);
+
+          // Add hour labels at the bottom
+          const hourLabels = document.createElement('div');
+          hourLabels.className = 'hour-labels';
+          for (let h = 6; h <= 23; h++) {
+            const lbl = document.createElement('div');
+            lbl.textContent = `${h}:00`;
+            hourLabels.appendChild(lbl);
+          }
+          locationChart.appendChild(hourLabels);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading JSON data:', err);
+        document.body.innerHTML = '<p>Error loading the busyness data. Please try again later.</p>';
       });
-
-      row.appendChild(label);
-      row.appendChild(bars);
-      chart.appendChild(row);
-    });
-
-    // Add hour labels
-    for (let h = 6; h <= 23; h++) {
-      const lbl = document.createElement("div");
-      lbl.textContent = `${h}:00`;
-      hourLabels.appendChild(lbl);
-    }
   </script>
 
 </body>
