@@ -52,7 +52,7 @@ h2 {
 }
 
 .bar:hover {
-    background: #357ABD;
+    /* background: #357ABD; */
 }
 
 .hour-labels {
@@ -88,3 +88,55 @@ h2 {
     writing-mode: vertical-lr;
     margin-right: 20px;
 }
+
+.current-hour-bar {
+    background-color: #22cfff; 
+  }
+  
+  .live-overlay {
+    opacity: 0.8;
+  }
+  
+  .busier-than-usual {
+    background-color: #d50000; 
+    
+  }
+  
+  .less-busy-than-usual {
+    background-color: #d50000; 
+  }
+  
+  .normal-busy {
+    background-color: #d50000; 
+  }
+  
+  .status-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.1;
+  }
+  
+  .status-label::after {
+    content: '';
+    position: absolute;
+    top: 100%; 
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  
+  .current-hour-bar:hover .status-label {
+    opacity: 1; 
+  }

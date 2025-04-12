@@ -11,6 +11,43 @@
   <div class="chart-container" id="chartContainer"></div>
 
   <script>
+    function getLiveBusynessOverlay(liveData, locationName, currentDay, hour) {
+      if (!liveData[locationName]) return null;
+      if (!liveData[locationName][currentDay]) return null;
+
+      const hourIndex = hour - 6; // assuming data starts at 6:00
+      const values = liveData[locationName][currentDay];
+
+      if (hourIndex < 0 || hourIndex >= values.length) return null;
+
+      const liveValue = values[hourIndex];
+      if (liveValue === null || liveValue === undefined || liveValue === 0) return null;
+
+      return liveValue;
+    }
+
+    function getBusynessStatus(currentValue, typicalValue) {
+      if (currentValue > typicalValue) {
+        return "Busier than usual";
+      } else if (currentValue < typicalValue) {
+        return "Less busy than usual";
+      } else {
+        return "As busy as usual";
+      }
+    }
+
+    function calculateTypicalValue(data, hourIndex) {
+      const values = [];
+      Object.values(data).forEach(dayData => {
+        if (dayData[hourIndex] !== null && dayData[hourIndex] !== undefined) {
+          values.push(dayData[hourIndex]);
+        }
+      });
+      if (values.length === 0) return null;
+      const sum = values.reduce((acc, val) => acc + val, 0);
+      return sum / values.length; // Average value
+    }
+
     // Fetch the JSON data
     fetch('../output/seat_busyness.json')
       .then(response => response.json())
@@ -99,17 +136,36 @@
             bars.className = 'bar-container';
 
             // Create the bars for each hour
-            values.forEach(val => {
+            values.forEach((val, index) => {
               const bar = document.createElement('div');
               bar.className = 'bar';
-              
-              // Inverse the height: More seats free -> smaller bar (less busy)
-              // If there is no data, set the height to 0%
+
+              // Invert the height
               if (val === null || val === undefined || val === 0) {
                 bar.style.height = '0%';
               } else {
-                bar.style.height = `${((maxVal - val) / maxVal) * 100}%`; // Invert the height
+                bar.style.height = `${((maxVal - val) / maxVal) * 100}%`;
               }
+
+              // Highlight if this bar is for the current hour
+              const currentHour = today.getHours();
+              const barHour = 6 + index; // 6:00 to 23:00 mapping
+
+              if (barHour === currentHour) {
+                bar.classList.add('current-hour-bar');
+
+                // Calculate typical value for the current hour
+                const typicalValue = calculateTypicalValue(data, index);
+                if (typicalValue !== null) {
+                  const statusMessage = getBusynessStatus(val, typicalValue);
+
+                  const statusLabel = document.createElement('div');
+                  statusLabel.className = 'status-label';
+                  statusLabel.textContent = statusMessage;
+                  bar.appendChild(statusLabel);
+                }
+              }
+
               bars.appendChild(bar);
             });
 
