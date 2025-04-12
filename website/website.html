@@ -17,6 +17,11 @@
       .then(busynessData => {
         const chartContainer = document.getElementById('chartContainer');
 
+        // Get the current day of the week
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const today = new Date();
+        const currentDay = daysOfWeek[today.getDay()];
+
         // Process each location
         Object.entries(busynessData).forEach(([locationName, data]) => {
           const locationChart = document.createElement('div');
@@ -31,8 +36,10 @@
           // Get max value to normalize busyness values (height of bars)
           const maxVal = Math.max(...Object.values(data).flat());
 
-          // Generate day rows
-          Object.entries(data).forEach(([day, values]) => {
+          // Check if today's data is available
+          if (data[currentDay]) {
+            const values = data[currentDay];
+
             // Count non-null data points for the day
             let nonNullCount = 0;
             let totalCount = values.length;
@@ -44,10 +51,10 @@
             });
 
             // Check if data coverage for the day is less than 10%
-            if (nonNullCount / totalCount < 0.1) {
+            if (nonNullCount / totalCount < 0.3) {
               const message = document.createElement('div');
               message.className = 'no-data-message';
-              message.textContent = `${day} doesn't have enough data to make a graph`;
+              message.textContent = `${currentDay} doesn't have enough data to make a graph`;
               locationChart.appendChild(message);
               return;
             }
@@ -62,14 +69,14 @@
                   if (values[j] !== null && values[j] !== undefined && values[j] !== 0) {
                     lastKnownValue = values[j];
                     break;
-                  }
+                  } 
                 }
 
                 if (lastKnownValue !== null) {
-                  for (let k = i; k < values.length && fillCount < 3; k++) {
+                  for (let k = i; k < values.length && fillCount < 1; k++) {
                     if (values[k] === null || values[k] === undefined || values[k] === 0) {
                       const hour = 6 + k; // Assuming the hours start at 6:00
-                      const adjustment = hour < 12 ? -5 : 5; // Adjust based on time of day
+                      const adjustment = hour < 14 ? -5 : 100; // Adjust based on time of day
                       values[k] = lastKnownValue + adjustment;
                       fillCount++;
                     } else {
@@ -86,7 +93,7 @@
             // Day label
             const label = document.createElement('div');
             label.className = 'day-label';
-            label.textContent = day;
+            label.textContent = currentDay;
 
             const bars = document.createElement('div');
             bars.className = 'bar-container';
@@ -109,7 +116,12 @@
             row.appendChild(label);
             row.appendChild(bars);
             locationChart.appendChild(row);
-          });
+          } else {
+            const message = document.createElement('div');
+            message.className = 'no-data-message';
+            message.textContent = `No data available for ${currentDay}`;
+            locationChart.appendChild(message);
+          }
 
           // Add the location chart to the container
           chartContainer.appendChild(locationChart);
