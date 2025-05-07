@@ -1,6 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import argparse
+from datetime import timedelta
+
+# Setup argument parser
+parser = argparse.ArgumentParser(description='Generate seat availability plots.')
+parser.add_argument('--last-two-weeks', action='store_true', help='Limit data to the last two weeks only.')
+args = parser.parse_args()
 
 # Load the data
 file_path = 'seat_availability.csv'
@@ -11,6 +18,16 @@ data = data[data['Seats Free'] != '??']
 data['Timestamp'] = pd.to_datetime(data['Timestamp'])
 data['Seats Free'] = pd.to_numeric(data['Seats Free'], errors='coerce')
 data = data.dropna(subset=['Seats Free'])
+
+# Filter to last 2 weeks if argument is passed
+if args.last_two_weeks:
+    end_date = data['Timestamp'].max()
+    start_date = end_date - timedelta(weeks=2)
+    data = data[(data['Timestamp'] >= start_date) & (data['Timestamp'] <= end_date)]
+    date_suffix = f"{start_date.date()}_to_{end_date.date()}"
+    output_dir = f'seat_availability_plots_last_2_weeks_{date_suffix}'
+else:
+    output_dir = 'seat_availability_plots'
 
 # Sort and remove consecutive identical measurements per location
 data = data.sort_values(by=['Location', 'Timestamp'])
@@ -26,18 +43,15 @@ data = data[(data['Hour'] >= 6) & (data['Hour'] <= 23)]
 # Get all unique locations and weekday names
 locations = data['Location'].unique()
 weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-# Set the desired hour range for x-axis
 hour_range = list(range(6, 24))
 
 # Create output directory
-output_dir = 'seat_availability_plots'
 os.makedirs(output_dir, exist_ok=True)
 
 # Plot for each location
 for location in locations:
     location_data = data[data['Location'] == location]
-    
+
     plt.figure(figsize=(12, 6))
 
     for day in weekdays:
@@ -54,7 +68,12 @@ for location in locations:
     plt.tight_layout()
 
     safe_location_name = location.replace(' ', '_').replace(':', '').replace('(', '').replace(')', '')
-    plt.savefig(os.path.join(output_dir, f'{safe_location_name}_by_day.png'))
+    filename = f'{safe_location_name}_by_day'
+    if args.last_two_weeks:
+        filename += f'_{date_suffix}'
+    filename += '.png'
+
+    plt.savefig(os.path.join(output_dir, filename))
     plt.close()
 
-print(f"Updated plots saved in {output_dir}")
+print(f"Plots saved in '{output_dir}'")
