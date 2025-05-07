@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Today's Seat Availability</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .chart-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    .chart-box {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 600px;
+    }
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Seat Availability for <span id="dayName"></span></h1>
+
+<div class="chart-container" id="chartContainer"></div>
+
+<script>
+  const hours = Array.from({length: 18}, (_, i) => `${i + 6}:00`);
+  const hourIndices = Array.from({length: 18}, (_, i) => i + 6); // 6 to 23
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const today = weekdays[new Date().getDay()];
+  document.getElementById('dayName').textContent = today;
+
+  const currentHour = new Date().getHours();
+  const currentHourIndex = currentHour >= 6 && currentHour <= 23 ? currentHour - 6 : -1;
+
+  async function loadAndRender() {
+    const res = await fetch('../output/seat_busyness.json');
+    const data = await res.json();
+    const container = document.getElementById('chartContainer');
+
+    for (const [location, days] of Object.entries(data)) {
+      const todayData = days[today];
+      if (!todayData) continue;
+
+      const backgroundColor = todayData.map((v, i) => {
+        return i === currentHourIndex ? '#1e7e34' : '#28a745';
+      });
+
+      const borderWidth = todayData.map((_, i) => i === currentHourIndex ? 2 : 1);
+      const borderColor = todayData.map((_, i) => i === currentHourIndex ? '#000' : 'rgba(0,0,0,0.1)');
+
+      const chartBox = document.createElement('div');
+      chartBox.className = 'chart-box';
+      const canvas = document.createElement('canvas');
+      chartBox.appendChild(canvas);
+      container.appendChild(chartBox);
+
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: hours,
+          datasets: [{
+            label: 'Seats Free',
+            data: todayData,
+            backgroundColor: backgroundColor,
+            borderColor: borderColor,
+            borderWidth: borderWidth
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: location,
+              font: {
+                size: 18
+              }
+            },
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Seats Free'
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  loadAndRender();
+</script>
+
+</body>
+</html>
