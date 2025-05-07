@@ -52,7 +52,7 @@
   const currentHourIndex = currentHour >= 6 && currentHour <= 23 ? currentHour - 6 : -1;
 
   async function loadAndRender() {
-    const res = await fetch('../output/seat_busyness.json');
+    const res = await fetch('/output/seat_busyness.json');
     const data = await res.json();
     const container = document.getElementById('chartContainer');
 
